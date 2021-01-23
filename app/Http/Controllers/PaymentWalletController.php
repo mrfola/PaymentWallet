@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PaymentWallet;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserTransaction;
 
 class PaymentWalletController extends Controller
 {
@@ -43,6 +44,55 @@ class PaymentWalletController extends Controller
         }
     }
 
+
+    public function top_up_wallet(int $topUpAmount, PaymentWallet $paymentWallet)
+    {
+        $currentWalletBalance = (int) $paymentWallet->account_balance;
+        $newWalletBalance = $currentWalletBalance + (int) $topUpAmount;
+
+        if($paymentWallet->update(["account_balance" => $newWalletBalance]))
+        {
+            $message = "Your funds have been added. Your new wallet balance for '".$paymentWallet->name."' is: ".$newWalletBalance;
+            $data['message'] = $message;
+            return redirect('home')->with('message', $message);
+        }
+    }
+
+
+    public function withdraw_from_wallet(Request $request)
+    {
+        $withdrawAmount = $request->amount;
+        $paymentWallet = PaymentWallet::findOrFail($request->wallet_id);
+
+        //check that you have enough money to withdraw
+        if($withdrawAmount < $paymentWallet->account_balance)
+        {
+            //create debit transaction record
+            $newDebitTransaction = new UserTransaction();
+            $newDebitTransaction->amount = $withdrawAmount;
+            $newDebitTransaction->ip_address = '1.0.0.1';
+            $newDebitTransaction->payment_wallet_id = $paymentWallet->id;
+            $newDebitTransaction->transaction_type = "debit";
+
+            if($newDebitTransaction->save())
+            {
+                $currentWalletBalance = (int) $paymentWallet->account_balance;
+                $newWalletBalance = $currentWalletBalance - (int) $withdrawAmount;
+                if($paymentWallet->update(["account_balance" => $newWalletBalance]))
+                {
+                    $message = "Your funds have been deducted. Your new wallet balance for '".$paymentWallet->name."' is: ".$newWalletBalance;
+                    $data['message'] = $message;
+                    return redirect('home')->with('message', $message);
+                }
+            }
+        }else
+        {
+            $error = "You don't have sufficient funds to withdraw #".$withdrawAmount." from your wallet '". $paymentWallet->name."'";
+            return redirect('home')->with('error', $error);
+        }
+        
+        
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -61,8 +111,10 @@ class PaymentWalletController extends Controller
      * @param  \App\Models\PaymentWallet  $paymentWallet
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PaymentWallet $paymentWallet)
+    public function destroy(Request $request)
     {
+        $payment_wallet_id = $request->wallet_id;
+        $paymentWallet = PaymentWallet::findOrFail($payment_wallet_id);
         $message = "Your wallet '".$paymentWallet->name."' has been deleted";
         if($paymentWallet->delete())
         {

@@ -10,6 +10,7 @@ class PaymentWallet extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    protected $fillable = ['account_balance'];
     
     public function User()
     {
