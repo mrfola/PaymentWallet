@@ -28,6 +28,10 @@ Route::post('/wallet', [App\Http\Controllers\PaymentWalletController::class, 'st
 Route::delete('/wallet', [App\Http\Controllers\PaymentWalletController::class, 'destroy'])->name('payment_wallet.destroy');
 
 Route::post('/pay-paystack', [App\Http\Controllers\PaystackPaymentController::class, 'redirectToGateway'])->name('pay-paystack');
-Route::get('/payment/callback', [App\Http\Controllers\PaystackPaymentController::class, 'handleGatewayCallback'])->name('callback-paystack');
+Route::get('/paystack/callback', [App\Http\Controllers\PaystackPaymentController::class, 'handleGatewayCallback'])->name('callback-paystack');
+
+Route::post('/pay-rave', [App\Http\Controllers\RavePaymentController::class, 'redirectToGateway'])->name('pay-rave');
+Route::get('/rave/callback', [App\Http\Controllers\RavePaymentController::class, 'handleGatewayCallback'])->name('callback-rave');
+
 Route::post('/withdraw', [App\Http\Controllers\PaymentWalletController::class, 'withdraw_from_wallet'])->name('withdraw-from-wallet');
 });

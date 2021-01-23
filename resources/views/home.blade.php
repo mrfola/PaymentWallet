@@ -29,7 +29,7 @@
                             <p><b>Wallet Balance: </b>{{$payment_wallet["account_balance"]}}</p>
                             <div  style="float:right;">
                             <button class="btn btn-success" type="button" style="color:white;" data-bs-toggle="modal" data-bs-target="#addMoneyPaystack" data-bs-add-money-to-payment-wallet-paystack="{{json_encode($array = ['wallet_id' => $payment_wallet['id']])}}">Add Money With Paystack</button>
-                            <button class="btn btn-success" type="button" style="color:white;" data-bs-toggle="modal" data-bs-target="#addMoneyFlutterwave" data-bs-add-money-to-payment-wallet-flutterwave="{{json_encode($array = ['wallet_id' => $payment_wallet['id']])}}">Add Money With Flutterwave</button>
+                            <button class="btn btn-success" type="button" style="color:white;" data-bs-toggle="modal" data-bs-target="#addMoneyFlutterwave" data-bs-add-money-to-payment-wallet-flutterwave="{{json_encode(array(array('metaname' => 'wallet_id', 'metavalue' => $payment_wallet['id'])))}} ">Add Money With Flutterwave</button>
                             <button class="btn btn-primary" style="color:white;" data-bs-toggle="modal" data-bs-target="#withdrawMoney" type="button" data-bs-withdraw-money-from-payment-wallet="{{json_encode($array = ['wallet_id' => $payment_wallet['id']])}}">Withdraw</button>
                             </div>
                         </div>
@@ -134,7 +134,7 @@
 </script>
 
 <!-- Add Money Paystack Modal -->
-<div class="modal fade" id="addPaystackMoney" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal fade" id="addMoneyPaystack" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -168,7 +168,7 @@
 
 <!-- Add Money Paystack Modal Script-->
 <script type="text/javascript">
-    var addMoneyPaystackModal = document.getElementById('addMoney')
+    var addMoneyPaystackModal = document.getElementById('addMoneyPaystack')
     addMoneyPaystackModal.addEventListener('show.bs.modal', function (event) {
     // Button that triggered the modal
     var addMoneyPaystackbutton = event.relatedTarget
@@ -194,7 +194,7 @@
             </button>
             </div>
 
-            <form method="POST" action="{{route('pay-paystack')}}">
+            <form method="POST" action="{{route('pay-rave')}}">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
@@ -203,8 +203,8 @@
                     </div>
                     <input type="hidden" name="email" value="{{Auth()->user()->email}}"> {{-- required --}}
                     <input type="hidden" name="orderID" value="345">
+                    <input type="hidden" name="country" value="NG" />
                     <input type="hidden" name="currency" value="NGN">
-                    <input type="hidden" name="reference" value="{{ Paystack::genTranxRef() }}"> {{-- required --}}        
                     <input type="hidden" class="metadata" name="metadata" value="{{ json_encode($array = ['key_name' => 'value',]) }}" >
                 </div>
                 <div class="modal-footer">
