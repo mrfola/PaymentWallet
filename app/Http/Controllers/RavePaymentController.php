@@ -44,6 +44,8 @@ class RavePaymentController extends PaymentWalletController implements PaymentIn
     $creditTransaction->card_expiry_year = $paymentDetails->data->card->expiryyear;
     $creditTransaction->card_brand = $paymentDetails->data->card->type;
     $creditTransaction->transaction_type = "credit";
+    $creditTransaction->payment_processor = "rave";
+
 
     //update wallet balance
     if($creditTransaction->save())

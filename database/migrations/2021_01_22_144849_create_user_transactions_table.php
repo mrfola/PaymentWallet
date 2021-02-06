@@ -26,6 +26,7 @@ class CreateUserTransactionsTable extends Migration
             $table->text('card_brand')->nullable();
             $table->text('bank')->nullable();
             $table->enum('transaction_type', ['debit', 'credit']);
+            $table->enum('payment_processor', ['rave', 'paystack']);
             $table->timestamps();
         });
     }

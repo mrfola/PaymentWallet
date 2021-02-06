@@ -40,7 +40,7 @@ class PaymentWalletController extends Controller
         {
             $message = "Your wallet '".$payment_wallet->name."' was created successfully";
             $data['message'] = $message;
-            return redirect('home')->with('message', $message);
+            return redirect('home')->with('wallet_message', $message);
         }
     }
 
@@ -54,7 +54,7 @@ class PaymentWalletController extends Controller
         {
             $message = "Your funds have been added. Your new wallet balance for '".$paymentWallet->name."' is: ".$newWalletBalance;
             $data['message'] = $message;
-            return redirect('home')->with('message', $message);
+            return redirect('home')->with('wallet_message', $message);
         }
     }
 
@@ -65,7 +65,7 @@ class PaymentWalletController extends Controller
         $paymentWallet = PaymentWallet::findOrFail($request->wallet_id);
 
         //check that you have enough money to withdraw
-        if($withdrawAmount < $paymentWallet->account_balance)
+        if($withdrawAmount <= $paymentWallet->account_balance)
         {
             //create debit transaction record
             $newDebitTransaction = new UserTransaction();
@@ -81,14 +81,14 @@ class PaymentWalletController extends Controller
                 if($paymentWallet->update(["account_balance" => $newWalletBalance]))
                 {
                     $message = "Your funds have been deducted. Your new wallet balance for '".$paymentWallet->name."' is: ".$newWalletBalance;
-                    $data['message'] = $message;
-                    return redirect('home')->with('message', $message);
+                    $data['wallet_message'] = $message;
+                    return redirect('home')->with('wallet_message', $message);
                 }
             }
         }else
         {
             $error = "You don't have sufficient funds to withdraw #".$withdrawAmount." from your wallet '". $paymentWallet->name."'";
-            return redirect('home')->with('error', $error);
+            return redirect('home')->with('wallet_error', $error);
         }
         
         
@@ -118,7 +118,7 @@ class PaymentWalletController extends Controller
         $message = "Your wallet '".$paymentWallet->name."' has been deleted";
         if($paymentWallet->delete())
         {
-            return redirect('home')->with('message', $message);
+            return redirect('home')->with('wallet_message', $message);
         }
     }
 }
