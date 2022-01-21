@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<!--
 <div class="container">
     <div class="row justify-content-center my-2 ">
         <div class="col-md-10 bg-white p-4">
@@ -48,6 +49,7 @@
     </div>
 
 </div>
+-->
 @endsection
 
 
@@ -120,7 +122,7 @@
     </div>
 </div>
 
-<!-- Add Money Paystack Modal -->
+<!-- Add Money Paystack Modal
 <div class="modal fade" id="addMoneyPaystack" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -151,7 +153,7 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Add Money Flutterwave Modal -->
 <div class="modal fade" id="addMoneyFlutterwave" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
